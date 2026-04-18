@@ -21,16 +21,25 @@ function CVPreview({ data }: { data: any }) {
       <div className="w-64 border-r border-slate-300 pr-6 space-y-8">
         {/* Profile Header */}
         <div className="space-y-2 mb-8">
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-2xl font-bold whitespace-nowrap">
             {data.personalInfo.firstName} {data.personalInfo.lastName}
           </h1>
           <p className="text-xs text-blue-600 font-semibold">
             {data.personalInfo.title || "Professional"}
           </p>
           <div className="text-xs space-y-1 text-slate-600">
-            <p>� {data.personalInfo.email}</p>
-            <p>� {data.personalInfo.phone}</p>
-            <p>� {data.personalInfo.location}</p>
+            <div className="flex items-center gap-2">
+              <span>✉</span>
+              <p>{data.personalInfo.email}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>☎</span>
+              <p>{data.personalInfo.phone}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>📍</span>
+              <p>{data.personalInfo.location}</p>
+            </div>
           </div>
           <div className="text-xs space-y-1 text-blue-600 pt-2">
             {data.personalInfo.socialLinks?.linkedin && (
@@ -176,12 +185,17 @@ function CVPreview({ data }: { data: any }) {
             <h2 className="text-sm font-bold mb-4 text-slate-900 uppercase">Projects</h2>
             <div className="space-y-3">
               {data.projects.map((proj: any) => (
-                <div key={proj.id}>
-                  <h3 className="text-xs font-bold text-slate-900">{proj.title}</h3>
-                  <p className="text-xs text-slate-700">{proj.description}</p>
-                  {proj.tools && (
-                    <p className="text-xs text-slate-600 mt-1">Tools: {proj.tools}</p>
-                  )}
+                <div key={proj.id} className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <h3 className="text-xs font-bold text-slate-900">{proj.title}</h3>
+                    <p className="text-xs text-slate-700">{proj.description}</p>
+                    {proj.tools && (
+                      <p className="text-xs text-slate-600 mt-1">Tools: {proj.tools}</p>
+                    )}
+                  </div>
+                  <a href="#" className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap mt-1">
+                    Preview →
+                  </a>
                 </div>
               ))}
             </div>
@@ -204,14 +218,19 @@ export default function PreviewPage() {
     if (!previewRef.current) return
 
     try {
+      const element = previewRef.current
+      
       // Create canvas from the div
-      const canvas = await html2canvas(previewRef.current, {
+      const canvas = await html2canvas(element, {
         scale: 2,
+        logging: false,
         useCORS: true,
+        allowTaint: true,
         backgroundColor: "#ffffff",
+        windowHeight: element.scrollHeight,
       })
 
-      // Create PDF
+      // Create PDF with proper dimensions
       const imgData = canvas.toDataURL("image/png")
       const pdf = new jsPDF({
         orientation: "portrait",
@@ -219,28 +238,37 @@ export default function PreviewPage() {
         format: "a4",
       })
 
-      // Calculate dimensions to fit A4
-      const imgWidth = 210 // A4 width in mm
+      const pageWidth = pdf.internal.pageSize.getWidth()
+      const pageHeight = pdf.internal.pageSize.getHeight()
+      
+      // Calculate image dimensions
+      const imgWidth = pageWidth
       const imgHeight = (canvas.height * imgWidth) / canvas.width
 
-      let heightLeft = imgHeight
-      let position = 0
+      let currentHeight = 0
 
-      // Add pages if content is longer than one page
-      while (heightLeft >= 0) {
-        if (position !== 0) {
-          pdf.addPage()
-        }
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
-        heightLeft -= 297 // A4 height in mm
-        position -= 297
+      // Add first page
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight)
+      currentHeight = imgHeight
+
+      // Add additional pages if content is longer
+      while (currentHeight > pageHeight) {
+        pdf.addPage()
+        pdf.addImage(
+          imgData,
+          "PNG",
+          0,
+          -currentHeight + pageHeight,
+          imgWidth,
+          imgHeight
+        )
+        currentHeight += pageHeight
       }
 
       // Save the PDF
       pdf.save(
         `${cvData.personalInfo.firstName}_${cvData.personalInfo.lastName}_CV.pdf`
       )
-      setCurrentStep(2)
     } catch (error) {
       console.error("Error generating PDF:", error)
       alert("Error generating PDF. Please try again.")
