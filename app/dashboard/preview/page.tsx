@@ -16,94 +16,178 @@ import { Download, Printer } from "lucide-react"
 
 function CVPreview({ data }: { data: any }) {
   return (
-    <div className="space-y-6 bg-white p-8 text-black">
-      {/* Header */}
-      <div className="border-b-2 border-slate-300 pb-4">
-        <h1 className="text-4xl font-bold">
-          {data.personalInfo.firstName} {data.personalInfo.lastName}
-        </h1>
-        <p className="mt-1 text-sm text-slate-600">{data.personalInfo.location}</p>
-        <p className="text-xs text-slate-600">
-          {data.personalInfo.email} | {data.personalInfo.phone}
-        </p>
+    <div className="flex bg-white p-8 text-black" style={{ minHeight: "100vh" }}>
+      {/* Left Sidebar */}
+      <div className="w-64 border-r border-slate-300 pr-6 space-y-8">
+        {/* Profile Header */}
+        <div className="space-y-2 mb-8">
+          <h1 className="text-2xl font-bold">
+            {data.personalInfo.firstName} {data.personalInfo.lastName}
+          </h1>
+          <p className="text-xs text-blue-600 font-semibold">
+            {data.personalInfo.title || "Professional"}
+          </p>
+          <div className="text-xs space-y-1 text-slate-600">
+            <p>� {data.personalInfo.email}</p>
+            <p>� {data.personalInfo.phone}</p>
+            <p>� {data.personalInfo.location}</p>
+          </div>
+          <div className="text-xs space-y-1 text-blue-600 pt-2">
+            {data.personalInfo.socialLinks?.linkedin && (
+              <p>🔗 LinkedIn: {data.personalInfo.socialLinks.linkedin}</p>
+            )}
+            {data.personalInfo.socialLinks?.behance && (
+              <p>🎨 Behance: {data.personalInfo.socialLinks.behance}</p>
+            )}
+            {data.personalInfo.socialLinks?.portfolio && (
+              <p>🌐 Portfolio: {data.personalInfo.socialLinks.portfolio}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Skills */}
+        {data.skills && data.skills.length > 0 && (
+          <div>
+            <h3 className="text-sm font-bold mb-3 text-slate-900 uppercase">Skills</h3>
+            <div className="space-y-1">
+              {data.skills.map((skill: string, idx: number) => (
+                <p key={idx} className="text-xs text-slate-700">
+                  • {skill}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Languages */}
+        {data.languages && data.languages.length > 0 && (
+          <div>
+            <h3 className="text-sm font-bold mb-3 text-slate-900 uppercase">Languages</h3>
+            <div className="space-y-1">
+              {data.languages.map((lang: string, idx: number) => (
+                <p key={idx} className="text-xs text-slate-700">
+                  • {lang}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Design Tools */}
+        {data.designTools && data.designTools.length > 0 && (
+          <div>
+            <h3 className="text-sm font-bold mb-3 text-slate-900 uppercase">Design Tools</h3>
+            <div className="space-y-1">
+              {data.designTools.map((tool: string, idx: number) => (
+                <p key={idx} className="text-xs text-slate-700">
+                  • {tool}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Development Tools */}
+        {data.developmentTools && data.developmentTools.length > 0 && (
+          <div>
+            <h3 className="text-sm font-bold mb-3 text-slate-900 uppercase">Dev Tools</h3>
+            <div className="space-y-1">
+              {data.developmentTools.map((tool: string, idx: number) => (
+                <p key={idx} className="text-xs text-slate-700">
+                  • {tool}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Interests */}
+        {data.interests && data.interests.length > 0 && (
+          <div>
+            <h3 className="text-sm font-bold mb-3 text-slate-900 uppercase">Interests</h3>
+            <div className="space-y-1">
+              {data.interests.map((interest: string, idx: number) => (
+                <p key={idx} className="text-xs text-slate-700">
+                  • {interest}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Professional Summary */}
-      {data.personalInfo.summary && (
-        <div>
-          <h2 className="mb-2 text-xl font-bold">Professional Summary</h2>
-          <p className="text-sm leading-relaxed text-slate-700">
-            {data.personalInfo.summary}
-          </p>
-        </div>
-      )}
+      {/* Main Content */}
+      <div className="flex-1 pl-6 space-y-8">
+        {/* Professional Summary */}
+        {data.personalInfo.summary && (
+          <div>
+            <h2 className="text-sm font-bold mb-3 text-slate-900 uppercase">Summary</h2>
+            <p className="text-xs leading-relaxed text-slate-700">
+              {data.personalInfo.summary}
+            </p>
+          </div>
+        )}
 
-      {/* Experience */}
-      {data.experience.length > 0 && (
-        <div>
-          <h2 className="mb-3 text-xl font-bold">Work Experience</h2>
-          <div className="space-y-4">
-            {data.experience.map((exp: any) => (
-              <div key={exp.id}>
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">{exp.position}</h3>
-                  <span className="text-xs text-slate-600">
-                    {exp.startDate} - {exp.endDate}
-                  </span>
+        {/* Experience */}
+        {data.experience.length > 0 && (
+          <div>
+            <h2 className="text-sm font-bold mb-4 text-slate-900 uppercase">Work Experience</h2>
+            <div className="space-y-4">
+              {data.experience.map((exp: any) => (
+                <div key={exp.id}>
+                  <div className="flex items-baseline justify-between">
+                    <h3 className="text-xs font-bold text-slate-900">{exp.position}</h3>
+                    <span className="text-xs text-slate-600">
+                      {exp.startDate} - {exp.endDate}
+                    </span>
+                  </div>
+                  <p className="text-xs text-blue-600 font-semibold">{exp.company}</p>
+                  <p className="text-xs leading-relaxed text-slate-700 mt-1">
+                    {exp.description}
+                  </p>
                 </div>
-                <p className="text-sm text-slate-600">{exp.company}</p>
-                <p className="mt-1 text-sm leading-relaxed text-slate-700">
-                  {exp.description}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Education */}
-      {data.education.length > 0 && (
-        <div>
-          <h2 className="mb-3 text-xl font-bold">Education</h2>
-          <div className="space-y-3">
-            {data.education.map((edu: any) => (
-              <div key={edu.id}>
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">{edu.degree}</h3>
-                  <span className="text-xs text-slate-600">{edu.year}</span>
+        {/* Education */}
+        {data.education.length > 0 && (
+          <div>
+            <h2 className="text-sm font-bold mb-4 text-slate-900 uppercase">Education</h2>
+            <div className="space-y-3">
+              {data.education.map((edu: any) => (
+                <div key={edu.id}>
+                  <div className="flex items-baseline justify-between">
+                    <h3 className="text-xs font-bold text-slate-900">{edu.degree}</h3>
+                    <span className="text-xs text-slate-600">{edu.year}</span>
+                  </div>
+                  <p className="text-xs text-blue-600 font-semibold">{edu.institution}</p>
+                  <p className="text-xs text-slate-600">{edu.field}</p>
                 </div>
-                <p className="text-sm text-slate-600">{edu.institution}</p>
-                <p className="text-sm text-slate-600">{edu.field}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Skills */}
-      {data.skills.length > 0 && (
-        <div>
-          <h2 className="mb-2 text-xl font-bold">Skills</h2>
-          <div className="flex flex-wrap gap-2">
-            {data.skills.map((skill: string, idx: number) => (
-              <span
-                key={idx}
-                className="rounded bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700"
-              >
-                {skill}
-              </span>
-            ))}
+        {/* Projects */}
+        {data.projects && data.projects.length > 0 && (
+          <div>
+            <h2 className="text-sm font-bold mb-4 text-slate-900 uppercase">Projects</h2>
+            <div className="space-y-3">
+              {data.projects.map((proj: any) => (
+                <div key={proj.id}>
+                  <h3 className="text-xs font-bold text-slate-900">{proj.title}</h3>
+                  <p className="text-xs text-slate-700">{proj.description}</p>
+                  {proj.tools && (
+                    <p className="text-xs text-slate-600 mt-1">Tools: {proj.tools}</p>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Languages */}
-      {data.languages.length > 0 && (
-        <div>
-          <h2 className="mb-2 text-xl font-bold">Languages</h2>
-          <p className="text-sm text-slate-700">{data.languages.join(", ")}</p>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
@@ -180,6 +264,9 @@ export default function PreviewPage() {
 
       {/* Action Buttons */}
       <div className="flex gap-4">
+        <Button variant="outline" onClick={() => window.history.back()}>
+          Back
+        </Button>
         <Button variant="outline" onClick={handlePrint}>
           <Printer className="mr-2 h-4 w-4" />
           Print
@@ -207,41 +294,6 @@ export default function PreviewPage() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Additional Options */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Download Options</CardTitle>
-          <CardDescription>
-            Choose how you want to save your CV
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Button
-            className="w-full"
-            onClick={generatePDF}
-            variant="default"
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Download as PDF
-          </Button>
-
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
-            <p className="text-sm text-blue-900 dark:text-blue-100">
-              ✓ Your CV has been successfully generated in Swiss format
-            </p>
-            <p className="text-xs mt-1 text-blue-800 dark:text-blue-200">
-              The PDF is ready to download and share with employers
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="flex gap-4">
-        <Button variant="outline" onClick={() => window.history.back()}>
-          Back
-        </Button>
-      </div>
     </div>
   )
 }

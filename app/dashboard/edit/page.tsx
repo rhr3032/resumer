@@ -280,6 +280,17 @@ export default function EditPage() {
                   }
                 />
               </div>
+              <div className="col-span-2 space-y-2">
+                <Label htmlFor="title">Professional Title</Label>
+                <Input
+                  id="title"
+                  placeholder="e.g., UX/UI Designer | Product Designer"
+                  value={cvData.personalInfo.title || ""}
+                  onChange={(e) =>
+                    handlePersonalInfoChange("title", e.target.value)
+                  }
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -808,9 +819,6 @@ export default function EditPage() {
 
       {/* Action Buttons */}
       <div className="flex gap-4 sticky bottom-0 bg-slate-50 dark:bg-slate-900 p-4 rounded-lg">
-        <Button variant="outline" onClick={() => window.history.back()}>
-          Back
-        </Button>
         <Button className="flex-1" onClick={handleContinue}>
           Continue to Template Selection
         </Button>

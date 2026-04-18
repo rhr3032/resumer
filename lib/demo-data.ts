@@ -28,6 +28,7 @@ export interface CVData {
   personalInfo: {
     firstName: string
     lastName: string
+    title: string
     email: string
     phone: string
     location: string
@@ -53,6 +54,7 @@ export const DEMO_CV_DATA: CVData = {
   personalInfo: {
     firstName: "Md. Raisul Hasan",
     lastName: "Rafi",
+    title: "UX/UI Designer | Product Designer",
     email: "contact.raisulrafi@gmail.com",
     phone: "+880 1795-408194",
     location: "Barisal, Bangladesh",
