@@ -2,18 +2,13 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { FileText, LayoutDashboard, FilePlus } from "lucide-react"
+import { FileText, FilePlus } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function Sidebar() {
   const pathname = usePathname()
 
   const items = [
-    {
-      title: "Dashboard",
-      href: "/dashboard",
-      icon: LayoutDashboard,
-    },
     {
       title: "Create New CV",
       href: "/dashboard/create",
