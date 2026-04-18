@@ -156,7 +156,7 @@ export default function PreviewPage() {
       pdf.save(
         `${cvData.personalInfo.firstName}_${cvData.personalInfo.lastName}_CV.pdf`
       )
-      setCurrentStep(6)
+      setCurrentStep(2)
     } catch (error) {
       console.error("Error generating PDF:", error)
       alert("Error generating PDF. Please try again.")
@@ -171,7 +171,7 @@ export default function PreviewPage() {
     <div className="max-w-6xl space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-50">
-          Step 5: Preview CV
+          Preview & Download
         </h1>
         <p className="mt-2 text-slate-600 dark:text-slate-400">
           Review your CV and download as PDF

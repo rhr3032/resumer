@@ -227,7 +227,7 @@ export default function EditPage() {
     <div className="max-w-6xl space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-50">
-          Step 3: Edit & Validate Data
+          Edit & Validate Data
         </h1>
         <p className="mt-2 text-slate-600 dark:text-slate-400">
           Review and edit all your CV information
