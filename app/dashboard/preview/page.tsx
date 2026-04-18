@@ -1,8 +1,6 @@
 "use client"
 
-import { useRef, useEffect } from "react"
-import html2canvas from "html2canvas"
-import jsPDF from "jspdf"
+import { useRef, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -12,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { useCV } from "@/lib/cv-context"
+import { exportCVToPDF } from "@/lib/export-pdf"
 import { Download, Printer } from "lucide-react"
 
 function CVPreview({ data }: { data: any }) {
@@ -209,69 +208,37 @@ function CVPreview({ data }: { data: any }) {
 export default function PreviewPage() {
   const { cvData, setCurrentStep } = useCV()
   const previewRef = useRef<HTMLDivElement>(null)
+  const [isExporting, setIsExporting] = useState(false)
 
   useEffect(() => {
     setCurrentStep(2)
   }, [setCurrentStep])
 
   const generatePDF = async () => {
-    if (!previewRef.current) return
+    if (!previewRef.current) {
+      alert("Preview element not found. Please try refreshing the page.")
+      return
+    }
+
+    setIsExporting(true)
 
     try {
-      const element = previewRef.current
-      
-      // Create canvas from the div
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        logging: false,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
-        windowHeight: element.scrollHeight,
-      })
-
-      // Create PDF with proper dimensions
-      const imgData = canvas.toDataURL("image/png")
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-      })
-
-      const pageWidth = pdf.internal.pageSize.getWidth()
-      const pageHeight = pdf.internal.pageSize.getHeight()
-      
-      // Calculate image dimensions
-      const imgWidth = pageWidth
-      const imgHeight = (canvas.height * imgWidth) / canvas.width
-
-      let currentHeight = 0
-
-      // Add first page
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight)
-      currentHeight = imgHeight
-
-      // Add additional pages if content is longer
-      while (currentHeight > pageHeight) {
-        pdf.addPage()
-        pdf.addImage(
-          imgData,
-          "PNG",
-          0,
-          -currentHeight + pageHeight,
-          imgWidth,
-          imgHeight
-        )
-        currentHeight += pageHeight
-      }
-
-      // Save the PDF
-      pdf.save(
-        `${cvData.personalInfo.firstName}_${cvData.personalInfo.lastName}_CV.pdf`
+      await exportCVToPDF(
+        previewRef.current,
+        cvData.personalInfo.firstName,
+        cvData.personalInfo.lastName,
+        { quality: "high" }
       )
+      console.log("PDF exported successfully")
     } catch (error) {
-      console.error("Error generating PDF:", error)
-      alert("Error generating PDF. Please try again.")
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred"
+      console.error("PDF export error:", errorMessage)
+      alert(
+        `Error generating PDF: ${errorMessage}\n\nPlease check the browser console for more details.`
+      )
+    } finally {
+      setIsExporting(false)
     }
   }
 
@@ -299,9 +266,9 @@ export default function PreviewPage() {
           <Printer className="mr-2 h-4 w-4" />
           Print
         </Button>
-        <Button onClick={generatePDF}>
+        <Button onClick={generatePDF} disabled={isExporting}>
           <Download className="mr-2 h-4 w-4" />
-          Download PDF
+          {isExporting ? "Exporting..." : "Download PDF"}
         </Button>
       </div>
 
