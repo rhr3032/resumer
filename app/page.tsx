@@ -7,7 +7,7 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    router.push("/dashboard/create")
+    router.push("/dashboard/edit")
   }, [router])
 
   return null

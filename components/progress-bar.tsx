@@ -1,57 +1,79 @@
 "use client"
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { FileText, FilePlus } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useCV } from "@/lib/cv-context"
+import { CheckCircle } from "lucide-react"
 
 export function ProgressBar() {
-  const pathname = usePathname()
+  const { currentStep } = useCV()
 
   const steps = [
     {
       id: 1,
-      title: "Create New CV",
-      href: "/dashboard/create",
-      icon: FilePlus,
+      title: "Edit Information",
     },
     {
       id: 2,
       title: "Preview & Download",
-      href: "/dashboard/preview",
-      icon: FileText,
     },
   ]
 
   return (
-    <div className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-      <div className="mx-auto max-w-full px-8">
-        <div className="flex items-center justify-between py-4">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-            CV Generator
-          </h1>
-          <nav className="flex gap-8">
-            {steps.map((step) => {
-              const Icon = step.icon
-              const isActive = pathname === step.href
-
-              return (
-                <Link
-                  key={step.href}
-                  href={step.href}
-                  className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-lg transition-colors border-b-2",
-                    isActive
-                      ? "border-blue-600 text-blue-600 dark:text-blue-400"
-                      : "border-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
-                  )}
+    <div className="border-b border-slate-100 bg-white dark:border-slate-800 dark:bg-white">
+      <div className="mx-auto px-8 py-2">
+        <div className="flex items-center justify-center gap-6">
+          {steps.map((step, index) => (
+            <div key={step.id} className="flex items-center gap-6">
+              {/* Step Circle */}
+              <div className="flex flex-col items-center gap-1">
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all font-semibold text-xs ${
+                    step.id < currentStep
+                      ? "border-green-600 bg-green-600 text-white"
+                      : step.id === currentStep
+                      ? "border-blue-600 bg-blue-600 text-white"
+                      : "border-slate-300 bg-white text-slate-400 dark:border-slate-300 dark:bg-white"
+                  }`}
                 >
-                  <Icon className="h-5 w-5" />
-                  <span className="text-sm font-medium">{step.title}</span>
-                </Link>
-              )
-            })}
-          </nav>
+                  {step.id < currentStep ? (
+                    <CheckCircle className="h-4 w-4" />
+                  ) : (
+                    <span className="text-xs">{step.id}</span>
+                  )}
+                </div>
+                <div className="text-center whitespace-nowrap">
+                  <p className="text-xs font-semibold text-slate-900 leading-tight">
+                    {step.title}
+                  </p>
+                  <p
+                    className={`text-xs leading-tight ${
+                      step.id < currentStep
+                        ? "text-green-600"
+                        : step.id === currentStep
+                        ? "text-blue-600"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    {step.id < currentStep
+                      ? "Completed"
+                      : step.id === currentStep
+                      ? "In Progress"
+                      : "Pending"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Connector Line */}
+              {index < steps.length - 1 && (
+                <div
+                  className={`h-0.5 w-8 ${
+                    step.id < currentStep
+                      ? "bg-green-600"
+                      : "bg-slate-300"
+                  }`}
+                />
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

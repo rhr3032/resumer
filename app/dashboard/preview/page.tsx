@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useEffect } from "react"
 import html2canvas from "html2canvas"
 import jsPDF from "jspdf"
 import { Button } from "@/components/ui/button"
@@ -111,6 +111,10 @@ function CVPreview({ data }: { data: any }) {
 export default function PreviewPage() {
   const { cvData, setCurrentStep } = useCV()
   const previewRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setCurrentStep(2)
+  }, [setCurrentStep])
 
   const generatePDF = async () => {
     if (!previewRef.current) return

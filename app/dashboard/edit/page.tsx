@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,6 +19,10 @@ export default function EditPage() {
   const router = useRouter()
   const { cvData, setCVData, updatePersonalInfo, setCurrentStep } = useCV()
   const [activeTab, setActiveTab] = useState<string>("personal")
+
+  useEffect(() => {
+    setCurrentStep(1)
+  }, [setCurrentStep])
 
   const handlePersonalInfoChange = (
     key: keyof typeof cvData.personalInfo,
@@ -206,8 +210,8 @@ export default function EditPage() {
   }
 
   const handleContinue = () => {
-    setCurrentStep(4)
-    router.push("/dashboard/template")
+    setCurrentStep(2)
+    router.push("/dashboard/preview")
   }
 
   const tabs = [
